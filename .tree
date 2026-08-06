@@ -1,0 +1,22 @@
+project/
+├── index.html
+├── game.html
+├── leaderboard.html
+├── assets/
+│   ├── css/
+│   │   └── style.css
+│   └── js/
+│   │   ├── main.js
+│   │   └── leaderboard.js
+├── php/
+│   ├── config.php
+│   ├── add_points.php
+│   ├── remove_points.php
+│   ├── set_points.php
+│   ├── get_leaderboard.php
+│   ├── register_player.php
+│   ├── get_player.php
+│   └── reset_player.php
+├── db/
+│   └── schema.sql
+└── README.md

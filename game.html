@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Joc — VR GAME</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__inner">
+      <a class="nav__logo" href="index.html">VR<span>GAME</span></a>
+      <ul class="nav__links">
+        <li><a href="index.html">Inici</a></li>
+        <li><a href="game.html" class="active">Joc</a></li>
+        <li><a href="leaderboard.html">Classificació</a></li>
+        <li><a href="admin.php">Admin</a></li>
+      </ul>
+      <div class="nav__toggle" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <main style="padding-top: 64px;">
+    <div class="container" style="padding-top: 40px; padding-bottom: 80px;">
+
+      <!-- Capçalera -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+        <div>
+          <p class="section__label" style="margin-bottom:4px;">// Joc en Línia</p>
+          <h1 style="font-family:var(--font-hud); font-size:1.6rem; font-weight:900; text-transform:uppercase; color:#fff;">Mode de Joc FPS</h1>
+        </div>
+        <div id="session-info" style="display:none; font-family:var(--font-mono); font-size:.8rem; color:var(--text-dim);">
+          Jugador: <span id="session-name" class="text-cyan">—</span>
+        </div>
+      </div>
+
+      <!-- Formulari d'inici de partida (el nom del jugador el proporciona el joc via postMessage) -->
+      <div id="start-screen" class="card" style="max-width:580px; margin:0 auto 40px; text-align:center;">
+        <div style="font-size:3rem; margin-bottom:16px;">🎮</div>
+        <h2 style="font-family:var(--font-hud); font-size:1rem; letter-spacing:.1em; text-transform:uppercase; color:#fff; margin-bottom:8px;">Prepara't per jugar</h2>
+        <p class="text-dim" style="font-size:.9rem; margin-bottom:16px;">El nom del jugador el proporcionarà el joc (dins de l'iframe). Un cop carregat, el joc ha d'enviar `postMessage({ type: 'player_info', name: 'NomJugador' }, '*')` per identificar l'usuari.</p>
+
+        <div class="alert alert--warn" style="text-align:left; margin-bottom:20px; font-size:.82rem;">
+          <span class="alert__icon">⚠️</span>
+          El joc requereix <strong>WebGL 2.0</strong> i mínim 4 GB de RAM disponible. Chrome és el navegador recomanat.
+        </div>
+        <button class="btn btn--primary" style="width:100%; justify-content:center;" onclick="startGame()">
+          ▶ Iniciar Partida
+        </button>
+      </div>
+
+      <!-- Game wrapper (amagat fins que l'usuari inicia) -->
+      <div id="game-container" style="display:none;">
+
+        <div class="game-wrapper">
+          <!-- 
+            ╔══════════════════════════════════════════════════════════╗
+            ║  AQUÍ VA EL TEU JOC UE5                                  ║
+            ║  Substitueix el src de l'iframe pel path del teu build   ║
+            ║  d'Unreal exportat a WebGL, per exemple:                 ║
+            ║    src="game/index.html"                                 ║
+            ║                                                          ║
+            ║  Si el joc és en la mateixa carpeta:                     ║
+            ║    src="game/GameName.html"                              ║
+            ╚══════════════════════════════════════════════════════════╝
+          -->
+          <iframe
+            id="game-frame"
+            class="game-frame"
+            src="game/index.html"
+            allow="pointer-lock; fullscreen; autoplay"
+            title="VR Game"
+          ></iframe>
+
+          <!-- Overlay de càrrega (visible fins que el joc carregui) -->
+          <div id="game-loading" class="game-overlay">
+            <div class="game-overlay__icon">⚡</div>
+            <div class="game-overlay__title">Carregant el joc...</div>
+            <p class="game-overlay__sub">S'estan descarregant els assets. Pot trigar uns moments la primera vegada.</p>
+            <div class="loader"></div>
+          </div>
+        </div>
+
+        <!-- HUD inferior -->
+        <div class="game-hud">
+          <div class="game-hud__stat">
+            JUGADOR
+            <span id="hud-name">—</span>
+          </div>
+          <div class="game-hud__stat">
+            PUNTUACIÓ ACTUAL
+            <span id="hud-score">0</span>
+          </div>
+          <div class="game-hud__stat">
+            ESTAT
+            <span id="hud-status" class="text-cyan">EN JOC</span>
+          </div>
+          <div style="display:flex; gap:12px;">
+            <button class="btn btn--outline" style="font-size:.6rem; padding:8px 16px;" onclick="toggleFullscreen()">
+              ⛶ Pantalla completa
+            </button>
+            <button class="btn btn--danger" style="font-size:.6rem; padding:8px 16px;" onclick="endGame()">
+              ✕ Sortir
+            </button>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div style="margin-top: 24px;">
+          <p class="section__label" style="font-size:.65rem; margin-bottom:12px;">Controls del joc</p>
+          <div class="game-controls">
+            <div class="game-control-item">
+              <span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span>
+              Moure's
+            </div>
+            <div class="game-control-item">
+              <span class="key">Ratolí</span>
+              Apuntar / Mirar
+            </div>
+            <div class="game-control-item">
+              <span class="key">Clic</span>
+              Disparar
+            </div>
+            <div class="game-control-item">
+              <span class="key">Espai</span>
+              Saltar
+            </div>
+            <div class="game-control-item">
+              <span class="key">Shift</span>
+              Córrer
+            </div>
+            <div class="game-control-item">
+              <span class="key">R</span>
+              Recarregar
+            </div>
+            <div class="game-control-item">
+              <span class="key">Esc</span>
+              Pausa / Alliberar cursor
+            </div>
+            <div class="game-control-item">
+              <span class="key">F</span>
+              Pantalla completa
+            </div>
+          </div>
+        </div>
+
+        <!-- Nota sobre Pointer Lock -->
+        <div class="alert alert--info" style="margin-top:20px; font-size:.84rem;">
+          <span class="alert__icon">🖱️</span>
+          <div>Fes clic dins del joc per activar el <strong>Pointer Lock</strong> (el cursor quedarà capturat). Prem <strong>Esc</strong> per alliberar-lo.</div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>VRGame Web · Unreal Engine 5.5.4 → WebGL</p>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+    var currentPlayerName = null;
+
+    function startGame() {
+      // Mostrar el contenidor del joc; el joc enviarà el nom via postMessage
+      document.getElementById('start-screen').style.display = 'none';
+      document.getElementById('game-container').style.display = 'block';
+
+      // Reset HUD
+      document.getElementById('hud-name').textContent = '—';
+      document.getElementById('hud-score').textContent = '0';
+      document.getElementById('hud-status').textContent = 'EN JOC';
+      document.getElementById('session-name').textContent = '—';
+      document.getElementById('session-info').style.display = 'block';
+
+      // Ocultar overlay quan carregui l'iframe
+      var frame = document.getElementById('game-frame');
+      frame.addEventListener('load', function() {
+        document.getElementById('game-loading').style.display = 'none';
+      });
+
+      // Si tarda más de 30s, amagar overlay igualment
+      setTimeout(function() {
+        var overlay = document.getElementById('game-loading');
+        if (overlay) overlay.style.display = 'none';
+      }, 30000);
+
+      showToast('Carregant el joc...', 'success');
+    }
+
+    function endGame() {
+      if (!confirm('Vols sortir de la partida?')) return;
+      document.getElementById('game-container').style.display = 'none';
+      document.getElementById('start-screen').style.display = 'block';
+      document.getElementById('hud-score').textContent = '0';
+      document.getElementById('hud-status').textContent = 'EN JOC';
+      currentPlayerName = null;
+      document.getElementById('session-info').style.display = 'none';
+      showToast('Partida finalitzada.', 'success');
+    }
+
+    function toggleFullscreen() {
+      var frame = document.getElementById('game-frame');
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        frame.requestFullscreen().catch(function(err) {
+          showToast('No s\'ha pogut activar el mode de pantalla completa.', 'error');
+        });
+      }
+    }
+
+    // Missatges des del joc (iframe)
+    window.addEventListener('message', function(event) {
+      if (!event.data || typeof event.data !== 'object') return;
+
+      var type = event.data.type;
+
+      // Identificació del jugador enviada pel joc
+      if (type === 'player_info' || type === 'playerInfo' || type === 'player') {
+        var name = event.data.name || event.data.player || event.data.playerName;
+        if (name) {
+          currentPlayerName = String(name).trim().substring(0, 24);
+          document.getElementById('hud-name').textContent = currentPlayerName;
+          document.getElementById('session-name').textContent = currentPlayerName;
+          document.getElementById('session-info').style.display = 'block';
+
+          // Registrar el jugador si cal (no importa si ja existeix)
+          fetch('php/register_player.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ player: currentPlayerName })
+          }).catch(function(){});
+        }
+        return;
+      }
+
+      if (type === 'score_update') {
+        document.getElementById('hud-score').textContent = event.data.score;
+      }
+
+      if (type === 'game_over') {
+        var score = event.data.score || 0;
+        document.getElementById('hud-status').textContent = 'PARTIDA ACABADA';
+
+        if (!currentPlayerName) {
+          showToast('Jugador no identificat. Puntuació no enviada.', 'error');
+          return;
+        }
+
+        // Enviar puntuació a la API
+        submitScore(currentPlayerName, score);
+      }
+    });
+
+    function submitScore(playerName, score) {
+      fetch('php/add_score.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ player: playerName, score: score })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.success) {
+          showToast('Puntuació guardada: ' + score + ' pts 🏆', 'success');
+        } else {
+          showToast('Error guardant puntuació: ' + (data.error || '?'), 'error');
+        }
+      })
+      .catch(function() {
+        showToast('No s\'ha pogut contactar amb el servidor.', 'error');
+      });
+    }
+  </script>
+</body>
+</html>

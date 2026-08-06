@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Game placeholder</title>
+  <style>body{font-family:Arial,Helvetica,sans-serif;background:#111;color:#eee;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;margin:0}button{padding:10px 14px;margin:6px}</style>
+</head>
+<body>
+  <h2>Game Placeholder</h2>
+  <p style="max-width:600px;text-align:center;color:#bbb">Replace this file with your Unreal/HTML5 export. While testing locally this placeholder lets the parent page receive messages (score updates and game over).</p>
+
+  <div>
+    <button id="btn-player">Enviar player_info (identificar jugador)</button>
+    <button id="btn-score">Enviar +100 (score_update)</button>
+    <button id="btn-over">Enviar game_over</button>
+  </div>
+
+  <script>
+    var score = 0;
+    document.getElementById('btn-player').addEventListener('click', function() {
+      var name = prompt('Nom de jugador per enviar a la pàgina mare:');
+      if (!name) return;
+      parent.postMessage({ type: 'player_info', name: name }, '*');
+    });
+
+    document.getElementById('btn-score').addEventListener('click', function() {
+      score += 100;
+      parent.postMessage({ type: 'score_update', score: score }, '*');
+    });
+    document.getElementById('btn-over').addEventListener('click', function() {
+      parent.postMessage({ type: 'game_over', score: score }, '*');
+    });
+  </script>
+</body>
+</html>

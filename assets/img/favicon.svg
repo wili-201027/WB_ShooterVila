@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="4" fill="#050810"/>
+  <text x="50%" y="56%" dominant-baseline="middle" text-anchor="middle"
+        font-family="monospace" font-size="16" font-weight="900" fill="#00e5ff">VR</text>
+</svg>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VR GAME — Projecte Web</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+</head>
+<body>
+
+  <!-- ═══ NAV ═══════════════════════════════════════════════ -->
+  <nav class="nav">
+    <div class="nav__inner">
+      <a class="nav__logo" href="index.html">VR<span>GAME</span></a>
+      <ul class="nav__links">
+        <li><a href="index.html" class="active">Inici</a></li>
+        <li><a href="game.html">Joc</a></li>
+        <li><a href="leaderboard.html">Classificació</a></li>
+        <li><a href="admin.php">Admin</a></li>
+      </ul>
+      <div class="nav__toggle" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ═══ HERO ═══════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero__bg"></div>
+    <p class="hero__eyebrow">// Unreal Engine 5.5.4 → Web</p>
+    <h1 class="hero__title">
+      Experiència VR
+      <em>al navegador</em>
+    </h1>
+    <p class="hero__sub">
+      Un shooter FPS de primera persona construït a UE5, adaptat per jugar
+      directament al navegador sense instal·lació addicional.
+    </p>
+    <div class="hero__cta">
+      <a href="game.html" class="btn btn--primary">▶ Jugar ara</a>
+      <a href="leaderboard.html" class="btn btn--outline">🏆 Classificació</a>
+    </div>
+  </section>
+
+  <!-- ═══ SOBRE EL PROJECTE ══════════════════════════════════ -->
+  <section id="projecte">
+    <div class="container">
+      <p class="section__label">01 — Sobre el projecte</p>
+      <h2 class="section__title">Tecnologia & Arquitectura</h2>
+
+      <div class="tech-grid">
+        <div class="card tech-card">
+          <div class="tech-card__icon">🎮</div>
+          <div class="tech-card__title">Unreal Engine 5.5.4</div>
+          <p class="tech-card__text">Motor original del joc. Exportat a WebGL/HTML5 mitjançant plugin comunitari. Lluminació estàtica (baked), sense Lumen ni Nanite per compatibilitat web.</p>
+        </div>
+        <div class="card tech-card">
+          <div class="tech-card__icon">🌐</div>
+          <div class="tech-card__title">Frontend Web</div>
+          <p class="tech-card__text">HTML5, CSS3 i JavaScript vanilla. El joc es descarrega i executa a la GPU/RAM de l'usuari. Sense límit de jugadors simultanis.</p>
+        </div>
+        <div class="card tech-card">
+          <div class="tech-card__icon">⚙️</div>
+          <div class="tech-card__title">Backend PHP 5</div>
+          <p class="tech-card__text">API REST lleugera amb PHP 5 clàssic. Consultes preparades (PDO) per evitar injeccions SQL. Base de dades MySQL per a puntuacions.</p>
+        </div>
+        <div class="card tech-card">
+          <div class="tech-card__icon">📡</div>
+          <div class="tech-card__title">Temps real</div>
+          <p class="tech-card__text">La taula de classificació es refresca automàticament via polling AJAX. El joc envia la puntuació final a través d'una crida JSON a la API.</p>
+        </div>
+        <div class="card tech-card">
+          <div class="tech-card__icon">🎯</div>
+          <div class="tech-card__title">Controls FPS</div>
+          <p class="tech-card__text">WASD per moure's, ratolí per apuntar, clic esquerre per disparar. L'API Pointer Lock del navegador captura el cursor dins del joc.</p>
+        </div>
+        <div class="card tech-card">
+          <div class="tech-card__icon">🔒</div>
+          <div class="tech-card__title">Seguretat</div>
+          <p class="tech-card__text">Totes les peticions a la API validen el token de sessió. Les puntuacions s'envien en POST xifrat per evitar manipulació des del client.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="separator" />
+
+  <!-- ═══ PLA D'ACCIÓ ════════════════════════════════════════ -->
+  <section id="pla">
+    <div class="container">
+      <p class="section__label">02 — Pla d'acció</p>
+      <h2 class="section__title">Roadmap · 3 Setmanes</h2>
+
+      <div class="phases">
+
+        <div class="phase">
+          <div class="phase__week"><strong>S1</strong>Setmana<br>1</div>
+          <div class="phase__dot"></div>
+          <div class="phase__body">
+            <h3>🔴 Decisió crítica — Test d'exportació</h3>
+            <p>Instal·lar el plugin comunitari HTML5/WebGL per a UE5 i exportar una escena mínima (un cub en moviment). Si l'exportació falla de forma irrecuperable → migrar a Unity o Godot.</p>
+            <ul>
+              <li>Instal·lar plugin <code>ue4-web-runtime</code> o equivalent UE5</li>
+              <li>Desactivar Lumen, Nanite i il·luminació dinàmica</li>
+              <li>Provar en Chrome, Firefox i Edge</li>
+              <li>Mesurar temps de càrrega i ús de memòria</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="phase">
+          <div class="phase__week"><strong>S2</strong>Setmana<br>2</div>
+          <div class="phase__dot"></div>
+          <div class="phase__body">
+            <h3>🟡 Adaptació i optimització</h3>
+            <p>Implementar els controls FPS complets, comprimir textures i fer el bake de llums de l'escena. Integrar la lògica d'enviament de puntuació al joc.</p>
+            <ul>
+              <li>Controls WASD + Pointer Lock API</li>
+              <li>Compressió de textures (BC7 → ASTC/ETC2 per WebGL)</li>
+              <li>Bake de llums estàtiques amb Lightmass</li>
+              <li>Plugin VaRest per enviar JSON al backend</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="phase">
+          <div class="phase__week"><strong>S3</strong>Setmana<br>3</div>
+          <div class="phase__dot"></div>
+          <div class="phase__body">
+            <h3>🟢 Integració i llançament</h3>
+            <p>Disseny final de la web, base de dades MySQL operativa i tests de càrrega amb múltiples jugadors simultanis.</p>
+            <ul>
+              <li>Disseny responsive complet HTML/CSS</li>
+              <li>API PHP per a puntuacions (add, remove, reset)</li>
+              <li>Tests de concurrència (≥10 jugadors alhora)</li>
+              <li>Deploy al servidor i configuració CORS</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="separator" />
+
+  <!-- ═══ AVISOS TÈCNICS ═════════════════════════════════════ -->
+  <section id="avisos">
+    <div class="container">
+      <p class="section__label">03 — Avisos importants</p>
+      <h2 class="section__title">Limitacions & Riscos</h2>
+      <div class="tech-grid">
+        <div class="alert alert--danger">
+          <span class="alert__icon">⚠️</span>
+          <div><strong>Plugin no oficial:</strong> L'exportació HTML5 de UE5 depèn d'un plugin comunitari. Pot tenir bugs i no estar actualitzat a la versió 5.5.4.</div>
+        </div>
+        <div class="alert alert--warn">
+          <span class="alert__icon">💡</span>
+          <div><strong>Requisits de l'usuari:</strong> El navegador necessita suport WebGL 2.0 i un mínim de 4 GB de RAM lliure per executar el joc fluidament.</div>
+        </div>
+        <div class="alert alert--warn">
+          <span class="alert__icon">📦</span>
+          <div><strong>Mida del joc:</strong> Un projecte UE5 optimitzat per web pot pesar 150–500 MB. Considera usar un CDN per a la distribució dels assets.</div>
+        </div>
+        <div class="alert alert--info">
+          <span class="alert__icon">ℹ️</span>
+          <div><strong>Pla B:</strong> Si UE5 → WebGL falla, Unity WebGL i Godot 4 (HTML5) ofereixen exportació nativa estable i gratuïta.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CLASSIFICACIÓ PREVIEW ══════════════════════════════ -->
+  <section id="ranking">
+    <div class="container">
+      <p class="section__label">04 — Classificació</p>
+      <h2 class="section__title">Top Jugadors</h2>
+
+      <div class="leaderboard" id="leaderboard-preview">
+        <div class="leaderboard__header">
+          <span class="leaderboard__title">Classificació Global</span>
+          <span class="live-badge">EN VRET</span>
+        </div>
+        <table class="leaderboard__table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Jugador</th>
+              <th>Puntuació</th>
+              <th>Partides</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body">
+            <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-dim)">
+              <div class="loader" style="margin:0 auto 12px"></div>
+              Carregant puntuacions...
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-16" style="text-align:right">
+        <a href="leaderboard.html" class="btn btn--outline">Veure classificació completa →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══════════════════════════════════════════════ -->
+  <footer>
+    <div class="container">
+      <p>VRGame Web · Unreal Engine 5.5.4 → WebGL · Fet amb <span>❤️</span> i molt de PHP 5</p>
+    </div>
+  </footer>
+
+  <!-- ═══ TOAST CONTAINER ════════════════════════════════════ -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/leaderboard.js"></script>
+  <script>
+    // Carrega el preview de la classificació
+    document.addEventListener('DOMContentLoaded', function() {
+      loadLeaderboard('leaderboard-body', 5);
+    });
+  </script>
+</body>
+</html>

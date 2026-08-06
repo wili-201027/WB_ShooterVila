@@ -1,0 +1,79 @@
+# VR_ShooterVila — Apache Security Configuration
+# Copia este contenido en un archivo .htaccess en la raíz del proyecto
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Forzar HTTPS (descomenta si usas HTTPS en producción)
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# Denegar acceso a archivos de configuración
+<FilesMatch "config\.php|\.env|\.git|\.htaccess">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Denegar acceso a archivos sensibles
+<FilesMatch "\.(sql|json|md|bak|tmp)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Permitir acceso a archivos públicos
+<Files "index.html|game.html|admin.php|leaderboard.html">
+    Order allow,deny
+    Allow from all
+</Files>
+
+# Permitir acceso a assets
+<Directory "assets">
+    Order allow,deny
+    Allow from all
+</Directory>
+
+# Negar acceso a php/ directamente (solo a través de includes)
+<Directory "php">
+    Order allow,deny
+    Deny from all
+</Directory>
+
+# Permitir php/admin_login.php, php/admin_logout.php y otros endpoints públicos específicamente
+<FilesMatch "(admin_login|admin_logout|add_score|add_points|get_leaderboard|get_player|register_player|remove_score|remove_points|set_points|leaderboard_stream)\.php$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Headers de seguridad
+<IfModule mod_headers.c>
+    # Prevenir clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # Prevenir MIME sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # Habilitar XSS protection en navegadores antiguos
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Política de seguridad de contenido (CSP) - básica
+    Header set Content-Security-Policy "default-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+    
+    # Referrer Policy
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Comprimir respuestas (opcional, mejora rendimiento)
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/json application/javascript
+</IfModule>
+
+# Caché de navegador para assets estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+</IfModule>

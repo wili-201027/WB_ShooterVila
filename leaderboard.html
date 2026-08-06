@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classificació — VR GAME</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav__inner">
+      <a class="nav__logo" href="index.html">VR<span>GAME</span></a>
+      <ul class="nav__links">
+        <li><a href="index.html">Inici</a></li>
+        <li><a href="game.html">Joc</a></li>
+        <li><a href="leaderboard.html" class="active">Classificació</a></li>
+        <li><a href="admin.php">Admin</a></li>
+      </ul>
+      <div class="nav__toggle" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <main style="padding-top: 72px;">
+    <div class="container">
+      <p class="section__label">Classificació Global</p>
+      <h1 class="section__title">Top Jugadors</h1>
+
+      <div class="leaderboard">
+        <table class="leaderboard__table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Jugador</th>
+              <th>Puntuació</th>
+              <th>Partides</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body">
+            <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-dim)">Carregant...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>VRGame Web · Unreal Engine → WebGL</p>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/leaderboard.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      startLiveLeaderboard('leaderboard-body', 0); // intenta SSE, fallback a polling
+    });
+  </script>
+</body>
+</html>
