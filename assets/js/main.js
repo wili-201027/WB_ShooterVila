@@ -17,9 +17,13 @@ function showToast(msg, type) {
   var icons = { success: '✓', error: '✕', warn: '⚠' };
   var toast = document.createElement('div');
   toast.className = 'toast toast--' + type;
-  toast.innerHTML =
-    '<span style="color:' + (type === 'error' ? 'var(--red)' : type === 'warn' ? 'var(--gold)' : 'var(--cyan)') + '">' +
-    (icons[type] || '•') + '</span>' + msg;
+
+  var icon = document.createElement('span');
+  icon.style.color = (type === 'error' ? 'var(--red)' : type === 'warn' ? 'var(--gold)' : 'var(--cyan)');
+  icon.textContent = (icons[type] || '•');
+
+  toast.appendChild(icon);
+  toast.appendChild(document.createTextNode(String(msg)));
 
   container.appendChild(toast);
   setTimeout(function () {
